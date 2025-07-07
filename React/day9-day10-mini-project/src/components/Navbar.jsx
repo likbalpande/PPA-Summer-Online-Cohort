@@ -14,7 +14,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="flex px-6 py-4 justify-between items-center bg-emerald-200">
+        <nav className="flex px-6 py-4 justify-between items-center bg-black-200 text-white">
             <Link to="/">My App</Link>
             <div>
                 <input
