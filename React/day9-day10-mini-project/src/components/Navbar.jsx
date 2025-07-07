@@ -16,7 +16,7 @@ const Navbar = () => {
     return (
         <nav className="flex px-6 py-4 justify-between items-center bg-black text-white">
             <Link to="/" className="py-1 px-2 bg-purple-800 text-white rounded-md w-fit">
-                My App
+                Shopping App
             </Link>
             <div>
                 <input
