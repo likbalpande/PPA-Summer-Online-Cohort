@@ -1,5 +1,6 @@
 const http = require("http");
 const fsPromises = require("fs/promises");
+const { getProductCards } = require("./utils/product_helper");
 
 const server = http.createServer(async (req, res) => {
     try {
@@ -7,15 +8,13 @@ const server = http.createServer(async (req, res) => {
 
         if (req.url === "/") {
             const data = await fsPromises.readFile("./pages/homePage.html", "utf-8");
-            console.log("🟡 : data:", data);
-            console.log("🟡 : typeof(data):", typeof data);
-            console.log("------------------");
-            console.log("------------------");
-
-            const newData = data.replace("__MAIN__", "<h1>Hello from server!</h1>");
-            console.log("🟡 : newData:", newData);
-            console.log("🟡 : typeof(newData):", typeof newData);
-
+            const cardsStr = await getProductCards();
+            // <div class='card'>
+            //     <img src="https://img.freepik.com/premium-photo/books-white_144962-2091.jpg?semt=ais_hybrid&w=740" width='200'/>
+            //     <h4>Book</h4>
+            //     <h6>Price: 200</h6>
+            // </div>
+            const newData = data.replace("__MAIN__", cardsStr);
             res.writeHead(200, { "Content-Type": "text/html" });
             res.end(newData);
         } else if (req.url === "/about") {
@@ -28,7 +27,8 @@ const server = http.createServer(async (req, res) => {
             res.end(data);
         }
     } catch (err) {
-        res.writeHead(200, { "Content-Type": "text/html" });
+        console.log("🟡 : err:", err);
+        res.writeHead(500, { "Content-Type": "text/html" });
         res.end("<h1>Something went wrong...</h1>");
     }
 });
