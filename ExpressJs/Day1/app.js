@@ -6,7 +6,8 @@ const app = express();
 
 app.use(express.json());
 
-const FILE_PATH = "./data.json";
+const FILE_PATH = "./products.json";
+const ORDERS_FILE_PATH = "./orders.json";
 
 app.use((req, res, next) => {
     console.log("-->", new Date(), req.method, req.url);
@@ -43,7 +44,7 @@ app.patch("/api/v1/products/:productId", async (req, res) => {
     const { productId } = req.params;
     const data = req.body;
     // get old array
-    const products = await myReadFile("./data.json");
+    const products = await myReadFile(FILE_PATH);
     // find if there is any product with that given id
     // (array search method) findIndex
     const idx = products.findIndex((elem) => {
@@ -103,6 +104,47 @@ app.delete("/api/v1/products/:productId", async (req, res) => {
         isSuccess: true,
         message: "Product updated",
         data: {},
+    });
+});
+
+app.post("/api/v1/orders", async (req, res) => {
+    const data = req.body;
+    const { productId } = data;
+    const products = await myReadFile(FILE_PATH);
+    const idx = products.findIndex((elem) => {
+        return elem.id === productId;
+    });
+    if (idx === -1) {
+        res.status(400);
+        res.json({
+            isSuccess: false,
+            message: "Invalid product id",
+        });
+        return;
+    }
+    const oldObj = products[idx];
+    const oldQuantity = products[idx].quantity;
+    if (oldQuantity <= 0) {
+        res.status(500);
+        res.json({
+            isSuccess: false,
+            message: "Product is out of stock!",
+        });
+        return;
+    }
+    // reducing the quantity by one since someone bought that product
+    products[idx] = { ...oldObj, quantity: oldQuantity - 1 };
+    mySaveFile(FILE_PATH, products);
+
+    //to create a order
+    const orders = await myReadFile(ORDERS_FILE_PATH);
+    orders.push({ id: uuidv4(), productId: productId });
+    mySaveFile(ORDERS_FILE_PATH, orders);
+
+    res.status(201);
+    res.json({
+        isSuccess: true,
+        message: "Order created",
     });
 });
 
