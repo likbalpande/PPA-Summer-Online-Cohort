@@ -6,6 +6,8 @@ const app = express();
 
 app.use(morgan("dev")); // app level middleware
 
+app.use(express.json()); // please read the body in json format
+
 app.get("/", (req, res) => {
     res.status(200).json({
         isSuccess: true,
