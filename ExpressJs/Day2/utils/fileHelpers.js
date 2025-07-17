@@ -1,5 +1,7 @@
 const fsPromises = require("fs/promises");
 
+// RACE condition
+// Data redundancy
 const myReadFile = async (filePath) => {
     try {
         const data = await fsPromises.readFile(filePath, "utf-8");
