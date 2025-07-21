@@ -30,6 +30,21 @@ const productSchema = new Schema(
     }
 );
 
+// ------------- default preferences ---------------
+productSchema.pre("findOneAndUpdate", function () {
+    this.options.runValidators = true;
+    this.options.new = true;
+});
+productSchema.pre("updateOne", function () {
+    this.options.runValidators = true;
+    this.options.new = true;
+});
+productSchema.pre("updateMany", function () {
+    this.options.runValidators = true;
+    this.options.new = true;
+});
+// --------------------------------------------------
+
 const ProductModel = model("product", productSchema);
 
 module.exports = { ProductModel };
