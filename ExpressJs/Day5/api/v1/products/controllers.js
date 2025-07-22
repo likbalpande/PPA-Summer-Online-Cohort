@@ -39,7 +39,8 @@ const createProductController = async (req, res) => {
 const getAllProductsController = async (req, res) => {
     try {
         console.log("--------- inside getAllProductsController ----------");
-        const result = await ProductModel.find();
+        // what if data is having millions of documents?
+        const result = await ProductModel.find(); // await or .then() or .exec()
 
         res.status(200).json({
             isSuccess: true,
@@ -143,7 +144,67 @@ const deleteProductController = async (req, res) => {
     }
 };
 
+// list products (**)
+// query, filters, pagination, regex
+const listProductsControllers = async (req, res) => {
+    try {
+        console.log("--------- inside listProductsControllers ----------");
+        const { limit, page, select = "title price quantity", q = "", maxPrice } = req.query;
+
+        const searchRegex = new RegExp(q, "ig");
+
+        const selectedItems = select.replaceAll(",", " ");
+
+        let limitNum = Number(limit);
+        if (limitNum <= 0 || Number.isNaN(limitNum)) {
+            limitNum = 2;
+        }
+        let pageNum = Number(page) || 1;
+        if (pageNum <= 0 || Number.isNaN(pageNum)) {
+            pageNum = 1;
+        }
+        const skipNum = (pageNum - 1) * limitNum;
+
+        const query = ProductModel.find(); // waiter will come and start taking order
+        query.select(selectedItems); // giving waiter some order items
+        query.or([{ title: searchRegex }, { description: searchRegex }]); // giving waiter some order items
+
+        const maxPriceNum = Number(maxPrice);
+        if (maxPrice && !Number.isNaN(maxPriceNum)) {
+            query.where("price").lte(maxPrice); // giving waiter some order items
+        }
+
+        const totalDocumentsCount = await query.clone().countDocuments(); // the clone query will have all the instructions that have been given till now
+
+        // limit the number of items (PAGINATION)
+        query.skip(skipNum); // giving waiter some order items
+        query.limit(limitNum); // giving waiter some order items
+
+        const products = await query; // telling waiter that i have given my order now execute it
+
+        res.status(200).json({
+            isSuccess: true,
+            message: "Product list",
+            data: {
+                products,
+                total: totalDocumentsCount,
+                skip: skipNum,
+                limit: Math.min(limitNum, products.length),
+            },
+        });
+    } catch (err) {
+        console.log("--------- error in listProductsControllers ----------", err.message);
+
+        res.status(500).json({
+            isSuccess: false,
+            message: "Internal Server Error",
+            data: {},
+        });
+    }
+};
+
 module.exports = {
+    listProductsControllers,
     createProductController,
     getAllProductsController,
     updateProductController,

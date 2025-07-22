@@ -5,13 +5,15 @@ const {
     getAllProductsController,
     updateProductController,
     deleteProductController,
+    listProductsControllers,
 } = require("./controllers");
 
 const { createProductValidator, updateProductValidator, deleteProductValidator } = require("./dto");
 
 const productRouter = express.Router();
 
-productRouter.get("/", getAllProductsController);
+productRouter.get("/", listProductsControllers);
+productRouter.get("/all", getAllProductsController);
 productRouter.post("/", createProductValidator, createProductController);
 productRouter.patch("/:productId", updateProductValidator, updateProductController);
 productRouter.delete("/:productId", deleteProductValidator, deleteProductController);
