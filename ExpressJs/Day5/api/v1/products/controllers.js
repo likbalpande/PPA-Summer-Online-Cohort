@@ -157,7 +157,7 @@ const listProductsControllers = async (req, res) => {
 
         let limitNum = Number(limit);
         if (limitNum <= 0 || Number.isNaN(limitNum)) {
-            limitNum = 2;
+            limitNum = 5;
         }
         let pageNum = Number(page) || 1;
         if (pageNum <= 0 || Number.isNaN(pageNum)) {
