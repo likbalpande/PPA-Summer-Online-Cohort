@@ -23,6 +23,7 @@ const productSchema = new Schema(
         description: {
             type: String,
         },
+        images: [String],
     },
     {
         timestamps: true,

@@ -15,6 +15,7 @@ const productRouter = express.Router();
 productRouter.get("/", listProductsControllers);
 productRouter.get("/all", getAllProductsController);
 productRouter.post("/", createProductValidator, createProductController);
+// productRouter.post("/bulk-create", createBulkProductsValidator, createBulkProductsController);
 productRouter.patch("/:productId", updateProductValidator, updateProductController);
 productRouter.delete("/:productId", deleteProductValidator, deleteProductController);
 

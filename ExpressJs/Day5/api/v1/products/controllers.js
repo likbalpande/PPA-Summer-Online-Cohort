@@ -149,7 +149,7 @@ const deleteProductController = async (req, res) => {
 const listProductsControllers = async (req, res) => {
     try {
         console.log("--------- inside listProductsControllers ----------");
-        const { limit, page, select = "title price quantity", q = "", maxPrice } = req.query;
+        const { limit, page, select = "title price quantity images", q = "", maxPrice } = req.query;
 
         const searchRegex = new RegExp(q, "ig");
 
@@ -158,6 +158,9 @@ const listProductsControllers = async (req, res) => {
         let limitNum = Number(limit);
         if (limitNum <= 0 || Number.isNaN(limitNum)) {
             limitNum = 5;
+        }
+        if (limitNum >= 50) {
+            limitNum = 50;
         }
         let pageNum = Number(page) || 1;
         if (pageNum <= 0 || Number.isNaN(pageNum)) {
