@@ -149,7 +149,14 @@ const deleteProductController = async (req, res) => {
 const listProductsControllers = async (req, res) => {
     try {
         console.log("--------- inside listProductsControllers ----------");
-        const { limit, page, select = "title price quantity images", q = "", maxPrice } = req.query;
+        const {
+            limit,
+            page,
+            select = "title price quantity images",
+            q = "",
+            maxPrice,
+            sort = "title -price -createdAt",
+        } = req.query;
 
         const searchRegex = new RegExp(q, "ig");
 
@@ -182,6 +189,7 @@ const listProductsControllers = async (req, res) => {
         // limit the number of items (PAGINATION)
         query.skip(skipNum); // giving waiter some order items
         query.limit(limitNum); // giving waiter some order items
+        query.sort(sort);
 
         const products = await query; // telling waiter that i have given my order now execute it
 

@@ -14,6 +14,8 @@ const productRouter = express.Router();
 
 productRouter.get("/", listProductsControllers);
 productRouter.get("/all", getAllProductsController);
+
+// ------ admin functionality
 productRouter.post("/", createProductValidator, createProductController);
 // productRouter.post("/bulk-create", createBulkProductsValidator, createBulkProductsController);
 productRouter.patch("/:productId", updateProductValidator, updateProductController);

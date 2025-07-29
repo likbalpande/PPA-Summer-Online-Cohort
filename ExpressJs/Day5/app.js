@@ -24,6 +24,8 @@ app.use(
 //     }, 2000);
 // });
 
+// rate limiter
+
 app.use(morgan("dev"));
 
 app.use(express.json());
