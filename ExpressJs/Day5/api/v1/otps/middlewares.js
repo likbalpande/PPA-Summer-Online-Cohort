@@ -9,7 +9,7 @@ const validateOtpMiddleware = async (req, res, next) => {
         console.log("🟡 : email:", email);
 
         // verify if the otp is correct or not
-        const otpDoc = await OtpModel.findOne().where("email").equals(email).sort("-createdAt");
+        const otpDoc = await OtpModel.findOne().where("email").equals(email).sort("-createdAt").lean();
 
         if (otpDoc == null) {
             res.status(400).json({
