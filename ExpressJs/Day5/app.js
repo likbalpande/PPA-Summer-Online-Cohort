@@ -15,6 +15,7 @@ const app = express();
 app.use(
     cors({
         origin: process.env.FRONTEND_URL, // put here frontend url that you want to allow
+        credentials: true,
     })
 );
 

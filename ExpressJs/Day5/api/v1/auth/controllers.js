@@ -1,5 +1,6 @@
 const { UserModel } = require("../../../models/userSchema");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const userSignupController = async (req, res) => {
     try {
@@ -88,15 +89,33 @@ const userLoginController = async (req, res) => {
             return;
         }
 
+        const token = jwt.sign(
+            {
+                email: userDoc.email,
+                _id: userDoc._id,
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: 60 * 60 * 24, // seconds
+            }
+        );
+        console.log("🟡 : token:", token);
+
+        res.cookie("authorization", token, {
+            httpOnly: true,
+            sameSite: "None", // prod: STRICT
+            secure: true, // do you want to send it only on HTTPS connection?
+        });
+
         res.status(200).json({
             isSuccess: true,
             message: "User logged in!",
-            data: {
-                user: {
-                    email: userDoc.email,
-                    _id: userDoc._id,
-                },
-            },
+            // data: {
+            //     user: {
+            //         email: userDoc.email,
+            //         _id: userDoc._id,
+            //     },
+            // },
         });
     } catch (err) {
         console.log("------- 🔴 Error in userLoginController --------", err.message);
