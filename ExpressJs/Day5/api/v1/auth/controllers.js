@@ -99,12 +99,12 @@ const userLoginController = async (req, res) => {
                 expiresIn: 60 * 60 * 24, // seconds
             }
         );
-        console.log("🟡 : token:", token);
 
         res.cookie("authorization", token, {
             httpOnly: true,
             sameSite: "None", // prod: STRICT
             secure: true, // do you want to send it only on HTTPS connection?
+            maxAge: 60 * 60 * 24 * 1000, // seconds
         });
 
         res.status(200).json({

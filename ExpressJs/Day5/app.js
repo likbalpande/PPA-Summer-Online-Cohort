@@ -5,6 +5,7 @@ const express = require("express");
 const morgan = require("morgan");
 const { apiRouter } = require("./api/v1/routes");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const PORT = process.env.PORT || 3900;
 
@@ -19,17 +20,19 @@ app.use(
     })
 );
 
-// app.use((req, res, next) => {
-//     setTimeout(() => {
-//         next();
-//     }, 2000);
-// });
+app.use((req, res, next) => {
+    setTimeout(() => {
+        next();
+    }, 2000);
+});
 
 // rate limiter
 
 app.use(morgan("dev"));
 
-app.use(express.json());
+app.use(express.json()); // body-parser in json format
+
+app.use(cookieParser()); // body-parser in json format
 
 app.use("/api/v1", apiRouter);
 

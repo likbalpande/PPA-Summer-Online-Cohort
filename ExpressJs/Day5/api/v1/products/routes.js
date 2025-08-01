@@ -9,8 +9,12 @@ const {
 } = require("./controllers");
 
 const { createProductValidator, updateProductValidator, deleteProductValidator } = require("./dto");
+const { validateLoggedInUserMiddleware } = require("../middlewares");
 
 const productRouter = express.Router();
+
+productRouter.use(validateLoggedInUserMiddleware); // router level middleware
+// secured APIs
 
 productRouter.get("/", listProductsControllers);
 productRouter.get("/all", getAllProductsController);
