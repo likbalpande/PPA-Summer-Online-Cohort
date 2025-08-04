@@ -127,4 +127,31 @@ const deleteProductValidator = (req, res, next) => {
     }
 };
 
-module.exports = { createProductValidator, updateProductValidator, deleteProductValidator };
+const validateViewProduct = (req, res, next) => {
+    try {
+        console.log("--------- inside validateViewProduct ----------");
+
+        const { productId } = req.params;
+        if (!productId) {
+            res.status(400).json({
+                isSuccess: false,
+                message: "ProductId is required!",
+                data: {},
+            });
+            return;
+        }
+
+        // validate for productId is in ObjectId format of MongoDB
+
+        next();
+    } catch (err) {
+        console.log("--------- error in validateViewProduct ----------", err.message);
+        res.status(500).json({
+            isSuccess: false,
+            message: "Internal Server Error",
+            data: {},
+        });
+    }
+};
+
+module.exports = { validateViewProduct, createProductValidator, updateProductValidator, deleteProductValidator };

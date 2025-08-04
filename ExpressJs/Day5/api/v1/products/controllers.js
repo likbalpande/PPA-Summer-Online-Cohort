@@ -214,7 +214,42 @@ const listProductsControllers = async (req, res) => {
     }
 };
 
+const viewProductController = async (req, res) => {
+    try {
+        console.log("--------- inside viewProductController ----------");
+        const { productId } = req.params;
+        const result = await ProductModel.findById(productId); // await or .then() or .exec()
+
+        if (result === null) {
+            res.status(404);
+            res.json({
+                isSuccess: false,
+                message: "Product not found for given productId",
+                data: {},
+            });
+            return;
+        }
+
+        res.status(200).json({
+            isSuccess: true,
+            message: "Product found!",
+            data: {
+                product: result,
+            },
+        });
+    } catch (err) {
+        console.log("--------- error in viewProductController ----------", err.message);
+
+        res.status(500).json({
+            isSuccess: false,
+            message: "Internal Server Error",
+            data: {},
+        });
+    }
+};
+
 module.exports = {
+    viewProductController,
     listProductsControllers,
     createProductController,
     getAllProductsController,

@@ -6,23 +6,30 @@ const {
     updateProductController,
     deleteProductController,
     listProductsControllers,
+    viewProductController,
 } = require("./controllers");
 
-const { createProductValidator, updateProductValidator, deleteProductValidator } = require("./dto");
+const {
+    validateViewProduct,
+    createProductValidator,
+    updateProductValidator,
+    deleteProductValidator,
+} = require("./dto");
 const { validateLoggedInUserMiddleware } = require("../middlewares");
 
 const productRouter = express.Router();
 
-productRouter.use(validateLoggedInUserMiddleware); // router level middleware
+// productRouter.use(validateLoggedInUserMiddleware); // router level middleware
 // secured APIs
 
 productRouter.get("/", listProductsControllers);
-productRouter.get("/all", getAllProductsController);
+productRouter.get("/all", validateLoggedInUserMiddleware, getAllProductsController);
 
 // ------ admin functionality
-productRouter.post("/", createProductValidator, createProductController);
+productRouter.post("/", validateLoggedInUserMiddleware, createProductValidator, createProductController);
 // productRouter.post("/bulk-create", createBulkProductsValidator, createBulkProductsController);
-productRouter.patch("/:productId", updateProductValidator, updateProductController);
-productRouter.delete("/:productId", deleteProductValidator, deleteProductController);
+productRouter.patch("/:productId", validateLoggedInUserMiddleware, updateProductValidator, updateProductController);
+productRouter.delete("/:productId", validateLoggedInUserMiddleware, deleteProductValidator, deleteProductController);
+productRouter.get("/view/:productId", validateViewProduct, viewProductController);
 
 module.exports = { productRouter };
