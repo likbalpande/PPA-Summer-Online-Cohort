@@ -127,4 +127,29 @@ const userLoginController = async (req, res) => {
     }
 };
 
-module.exports = { userSignupController, userLoginController };
+const userLogoutController = async (req, res) => {
+    try {
+        console.log("------- inside userLogoutController ------");
+
+        // remove the cookie ('authorization')
+        res.cookie("authorization", "", {
+            httpOnly: true,
+            sameSite: "None", // prod: STRICT
+            secure: true, // do you want to send it only on HTTPS connection?
+            maxAge: 0, // seconds
+        });
+
+        res.status(200).json({
+            isSuccess: true,
+            message: "User logged out!",
+        });
+    } catch (err) {
+        console.log("------- 🔴 Error in userLogoutController --------", err.message);
+
+        res.status(500).json({
+            isSuccess: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+module.exports = { userLogoutController, userSignupController, userLoginController };
