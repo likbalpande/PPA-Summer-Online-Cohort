@@ -35,6 +35,32 @@ const orderSchema = new Schema(
             trim: true,
             required: true,
         },
+        contactNumbers: [String],
+        orderStatus: {
+            type: String,
+            enum: ["Pending", "In Progress", "Delivered"],
+            default: "Pending",
+        },
+        paymentStatus: {
+            type: String,
+            enum: [
+                "INITIATED",
+                "ABANDONED",
+                // Below ENUMS are from CASHFREE
+                "SUCCESS",
+                "FAILED",
+                "NOT_ATTEMPTED",
+                "PENDING",
+                "FLAGGED",
+                "CANCELLED",
+                "VOID",
+                "USER_DROPPED",
+            ],
+            default: "INITIATED",
+        },
+        paymentDetails: Object,
+        paymentSessionId: String,
+        lastUpdatedPaymentDetails: Object,
     },
     {
         timestamps: true,

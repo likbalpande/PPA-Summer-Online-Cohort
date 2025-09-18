@@ -1,11 +1,13 @@
 require("dotenv").config();
 require("./config/db");
 
+const cron = require("node-cron");
 const express = require("express");
 const morgan = require("morgan");
 const { apiRouter } = require("./api/v1/routes");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const { checkForAbandonedOrdersCronJob } = require("./api/v1/orders/controller");
 
 const PORT = process.env.PORT || 3900;
 
@@ -36,6 +38,12 @@ app.use(express.json()); // body-parser in json format
 app.use(cookieParser()); // body-parser in json format
 
 app.use("/api/v1", apiRouter);
+
+cron.schedule("*/15 * * * * *", () => {
+    console.log("* * * running a task every fifteen seconds * * *");
+
+    checkForAbandonedOrdersCronJob();
+});
 
 app.listen(PORT, () => {
     console.log("--------- Server Started ----------");
