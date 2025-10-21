@@ -231,7 +231,7 @@ const getAllOrdersForClientController = async (req, res) => {
 
 const checkForAbandonedOrdersCronJob = async () => {
     try {
-        console.log("------------ inside checkForAbandonedOrdersCronJob ----------");
+        // console.log("------------ inside checkForAbandonedOrdersCronJob ----------");
         const currentTime = Date.now();
         const before15Minutes = currentTime - 15 * 60 * 1000;
 
@@ -275,7 +275,7 @@ const checkForAbandonedOrdersCronJob = async () => {
             }
         }
 
-        console.log("------------ checkForAbandonedOrdersCronJob completed ----------");
+        // console.log("------------ checkForAbandonedOrdersCronJob completed ----------");
     } catch (err) {
         console.log("--------- error in checkForAbandonedOrdersCronJob ----------", err.message);
     }

@@ -37,10 +37,14 @@ app.use(express.json()); // body-parser in json format
 
 app.use(cookieParser()); // body-parser in json format
 
+app.get("/", (req, res) => {
+    res.send("<h1>Server is running ...</h1>");
+});
+
 app.use("/api/v1", apiRouter);
 
 cron.schedule("*/15 * * * * *", () => {
-    console.log("* * * running a task every fifteen seconds * * *");
+    // console.log("* * * running a task every fifteen seconds * * *");
 
     checkForAbandonedOrdersCronJob();
 });

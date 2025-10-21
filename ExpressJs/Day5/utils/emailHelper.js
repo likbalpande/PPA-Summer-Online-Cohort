@@ -1,35 +1,51 @@
 // sending EMAIL
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_MAILER_API_KEY);
 
 // Create a transporter for SMTP
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com", // gmail
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-    },
-});
+// const transporter = nodemailer.createTransport({
+//     host: "smtp.gmail.com", // gmail
+//     auth: {
+//         user: process.env.SMTP_USER,
+//         pass: process.env.SMTP_PASS,
+//     },
+// });
 
-(async () => {
-    try {
-        await transporter.verify();
-        console.log("--------- ✅ Email Server is Ready --------------");
-    } catch (err) {
-        console.log("--------- 🔴 Error connecting Email Server --------------");
-        console.log(err.message);
-    }
-})(); //IIFE
+// (async () => {
+//     try {
+//         await transporter.verify();
+//         console.log("--------- ✅ Email Server is Ready --------------");
+//     } catch (err) {
+//         console.log("--------- 🔴 Error connecting Email Server --------------");
+//         console.log(err.message);
+//     }
+// })(); //IIFE
 
 const sendEmail = async (toEmail, subject, htmlText) => {
     try {
-        await transporter.sendMail({
-            from: `"Shopping App Verification Team" <${process.env.SMTP_USER}>`, // sender address
-            to: toEmail, // receiver's email
-            subject: subject, // Subject line
-            html: htmlText, // html body
+        // await transporter.sendMail({
+        //     from: `"Shopping App Verification Team" <${process.env.SMTP_USER}>`, // sender address
+        //     to: toEmail, // receiver's email
+        //     subject: subject, // Subject line
+        //     html: htmlText, // html body
+        // });
+
+        const { data, error } = await resend.emails.send({
+            from: "verification@shop.likhilesh.xyz",
+            to: toEmail,
+            subject: subject,
+            html: htmlText,
         });
 
-        console.log("----------- ✅ Message sent -----------------");
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        console.log("🟡 : resp:", data);
+
+        console.log("----------- ✅ Message sent -----------------", data);
     } catch (err) {
         console.log("----------- ❌ Error while sending mail ------------");
         console.log(err.message);
