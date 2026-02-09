@@ -32,18 +32,18 @@ const renderSearchResults = (data) => {
     contents.forEach((obj) => {
         const { video } = obj;
         console.log("🟡 : video:", video);
-        const { thumbnails, title, descriptionSnippet, publishedTimeText, stats, videoId } = video;
+        const { thumbnails, title, descriptionSnippet, publishedTimeText, stats, videoId } = video || {};
 
         const newDiv = document.createElement("div");
         newDiv.className = "search-result-video-card";
 
         newDiv.innerHTML = `
             <div class='thumbnail-container'>
-                <img src='${thumbnails.pop().url}' width='100%'>
+                <img src='${thumbnails?.pop().url}' width='100%'>
             </div>
             <div class='video-data-container'>
                 <p>${title}</p>
-                <p>${stats.views}</p>
+                <p>${stats?.views}</p>
                 <p>${publishedTimeText}</p>
                 <p>${descriptionSnippet}</p>
             </div>
