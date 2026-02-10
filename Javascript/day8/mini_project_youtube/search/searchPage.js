@@ -3,23 +3,32 @@ const queryArray = searchQuery.split("=");
 const encodedSearchText = queryArray[queryArray.length - 1];
 console.log("search text-->", decodeURI(encodedSearchText));
 
+let cursor = null;
+
 const rootElem = document.getElementById("search-cards-container");
+let isLoading = false;
 
 const loadingContainer = document.getElementById("search-loading-container");
 
 const getSearchResults = () => {
-    const request = fetch(`https://youtube138.p.rapidapi.com/search/?q=${encodedSearchText}&hl=en&gl=US`, {
+    let url = `https://youtube138.p.rapidapi.com/search/?q=${encodedSearchText}&&hl=en&gl=US`;
+    if (cursor) {
+        url += `&cursor=${cursor}`;
+    }
+    const request = fetch(url, {
         method: "GET",
         headers: {
             "x-rapidapi-host": "youtube138.p.rapidapi.com",
             "x-rapidapi-key": "59cef08928msh10810e6f3f58241p13fe36jsneaf0bb86af62",
         },
     });
-
+    loadingContainer.style.display = "grid";
+    isLoading = true;
     request
         .then((response) => {
             const pr2 = response.json();
             pr2.then((data) => {
+                isLoading = false;
                 renderSearchResults(data);
                 loadingContainer.style.display = "none";
             });
@@ -30,7 +39,8 @@ const getSearchResults = () => {
 };
 
 const renderSearchResults = (data) => {
-    const { contents } = data;
+    const { contents, cursorNext } = data;
+    cursor = cursorNext;
 
     contents.forEach((obj) => {
         const { video } = obj;
@@ -60,4 +70,26 @@ const renderSearchResults = (data) => {
     });
 };
 
-// getSearchResults();
+getSearchResults();
+
+// --------------------- INTERSECTION OBSERVER FOR INFINITE LOADING ------------
+const options = {
+    rootMargin: "0px",
+    scrollMargin: "0px",
+    threshold: 1.0,
+};
+
+const handleInfiniteSearch = (entries) => {
+    entries.forEach((entry) => {
+        if (entry.intersectionRatio > 0.1 && !isLoading) {
+            // console.log("FOUND!", entry.intersectionRatio);
+            getSearchResults();
+        }
+    });
+};
+
+const observer = new IntersectionObserver(handleInfiniteSearch, options);
+
+const targetElement = document.getElementById("search-end-element");
+
+observer.observe(targetElement);
