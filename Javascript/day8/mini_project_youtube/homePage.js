@@ -3,7 +3,7 @@ const getTrendingVideos = () => {
         method: "GET",
         headers: {
             "x-rapidapi-host": "youtube138.p.rapidapi.com",
-            "x-rapidapi-key": "1a1ab9338bmsh4bfff8e240b3a37p16e373jsn99f4b6020162",
+            "x-rapidapi-key": "59cef08928msh10810e6f3f58241p13fe36jsneaf0bb86af62",
         },
     });
 
@@ -15,7 +15,41 @@ const getTrendingVideos = () => {
     });
 };
 
-getTrendingVideos();
+const showTrendingVideos = (data) => {
+    const { list } = data;
+    list.forEach((video) => {
+        const { author, title, publishedText, viewCountText, authorThumbnails, videoThumbnails, videoId } = video;
+
+        const newDiv = document.createElement("div");
+        newDiv.className = "video-card";
+        newDiv.innerHTML = `
+        <div>
+            <img class='video-thumbnail' src="${videoThumbnails[3].url}" >
+        </div>
+        <div class='card-footer-container'>
+            <div class='video-author-img-container'>
+                <img src="${authorThumbnails[1].url}" >
+            </div>
+            <div class='video-info-container'>
+                <p>${title}</p>
+                <div class='video-metadata-container'>
+                    <p>${author}</p>
+                    <div class='dot-v1'></div>
+                    <p>${viewCountText}</p>
+                    <div class='dot-v1'></div>
+                    <p>${publishedText}</p>
+                </div>
+            </div>
+        </div>
+        `;
+
+        newDiv.addEventListener("click", () => {
+            window.open(`./view/index.html?videoId=${videoId}`, "_blank");
+        });
+
+        rootElem.appendChild(newDiv);
+    });
+};
 
 const getSuggestionAPI = (searchText) => {
     console.log("API called", searchText);
@@ -53,42 +87,6 @@ const rootElem = document.getElementById("root");
 const searchSuggestionsContainerElement = document.getElementById("search-suggestions-container");
 const searchInputElem = document.getElementById("search-text-input");
 
-const showTrendingVideos = (data) => {
-    const { list } = data;
-    list.forEach((video) => {
-        const { author, title, publishedText, viewCountText, authorThumbnails, videoThumbnails, videoId } = video;
-
-        const newDiv = document.createElement("div");
-        newDiv.className = "video-card";
-        newDiv.innerHTML = `
-        <div>
-            <img class='video-thumbnail' src="${videoThumbnails[3].url}" >
-        </div>
-        <div class='card-footer-container'>
-            <div class='video-author-img-container'>
-                <img src="${authorThumbnails[1].url}" >
-            </div>
-            <div class='video-info-container'>
-                <p>${title}</p>
-                <div class='video-metadata-container'>
-                    <p>${author}</p>
-                    <div class='dot-v1'></div>
-                    <p>${viewCountText}</p>
-                    <div class='dot-v1'></div>
-                    <p>${publishedText}</p>
-                </div>
-            </div>
-        </div>
-        `;
-
-        newDiv.addEventListener("click", () => {
-            window.open(`./view/index.html?videoId=${videoId}`, "_self");
-        });
-
-        rootElem.appendChild(newDiv);
-    });
-};
-
 const handleAutoSuggest = (e) => {
     const searchText = e.target.value;
 
@@ -116,3 +114,5 @@ const handleSearch = () => {
     const val = searchInputElem.value;
     window.open(`./search/?searchText=${val}`, "_self");
 };
+
+getTrendingVideos();

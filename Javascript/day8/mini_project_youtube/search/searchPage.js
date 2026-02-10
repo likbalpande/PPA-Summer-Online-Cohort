@@ -5,12 +5,14 @@ console.log("search text-->", decodeURI(encodedSearchText));
 
 const rootElem = document.getElementById("search-cards-container");
 
+const loadingContainer = document.getElementById("search-loading-container");
+
 const getSearchResults = () => {
     const request = fetch(`https://youtube138.p.rapidapi.com/search/?q=${encodedSearchText}&hl=en&gl=US`, {
         method: "GET",
         headers: {
             "x-rapidapi-host": "youtube138.p.rapidapi.com",
-            "x-rapidapi-key": "1a1ab9338bmsh4bfff8e240b3a37p16e373jsn99f4b6020162",
+            "x-rapidapi-key": "59cef08928msh10810e6f3f58241p13fe36jsneaf0bb86af62",
         },
     });
 
@@ -19,6 +21,7 @@ const getSearchResults = () => {
             const pr2 = response.json();
             pr2.then((data) => {
                 renderSearchResults(data);
+                loadingContainer.style.display = "none";
             });
         })
         .catch((err) => {
@@ -57,4 +60,4 @@ const renderSearchResults = (data) => {
     });
 };
 
-getSearchResults();
+// getSearchResults();
